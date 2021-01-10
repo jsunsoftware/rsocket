@@ -66,6 +66,7 @@ class Client implements SocketAcceptor {
 					var stop = ((start + delayInSeconds) < now) && Math.random() > .8;
 					return new ClientHealthState(stop ? STOPPED : STARTED);
 				}))//
+						.doOnNext(clientHealthState -> {}) //without this the stream never closed on cancellation
 						.delayElements(Duration.ofSeconds(5));
 
 				return stateFlux//

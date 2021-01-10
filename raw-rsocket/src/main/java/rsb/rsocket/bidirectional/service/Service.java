@@ -69,6 +69,7 @@ class Service implements ApplicationListener<ApplicationReadyEvent>, SocketAccep
 									+ Instant.now() + "!";
 							return new GreetingResponse(message);
 						}))//
+						.doOnNext(greetingResponse -> { }) //without this the doFinally never achieved
 						.delayElements(Duration
 								.ofSeconds(Math.max(3, (long) (Math.random() * 10))))//
 						.doFinally(signalType -> log.info("finished."));

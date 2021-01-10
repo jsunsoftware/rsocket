@@ -35,8 +35,10 @@ class GreetingController {
 		var replyPayloadFlux = Flux// <4>
 				.fromStream(Stream.generate(() -> new GreetingResponse("Hello, "
 						+ greetingRequest.getName() + " @ " + Instant.now() + "!")))
+				.doOnNext(greetingResponse -> { }) //without this the doFinally never achieved
 				.delayElements(
-						Duration.ofSeconds(Math.max(3, (long) (Math.random() * 10))));
+						Duration.ofSeconds(Math.max(3, (long) (Math.random() * 10))))
+				.doFinally(signalType -> log.info("finished."));
 
 		return replyPayloadFlux//
 				.takeUntilOther(clientHealthStateFlux)// <5>
